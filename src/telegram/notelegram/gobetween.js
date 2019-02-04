@@ -50,7 +50,7 @@ export const fromSms = async (number, text) => {
       const telegramNotification = `Please welcome ${connection.name}, who has graciously brought ${fruit.slice(-1) == 's' ? 'a bunch of' : 'one'} ${fruit.toLowerCase()} to share.`
       sendTelegram(connection.cid, telegramNotification);
     } else {
-      response = `That's not a fruit in my book. Tell me the fruit you're actually going to bring. Or reply with DINGO and I'll quit bugging you.`
+      response = `That's not a fruit in my book. Tell me the fruit you're actually going to bring or reply with DINGO and I'll quit bugging you.`
     }
     sendSms(connection.number, response);
   }
