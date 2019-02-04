@@ -24,7 +24,7 @@ ${text}`;
       const args = split.splice(1);
       Logger.info(`Received command from ${cid} ${command}`);
       Logger.info(`Command ${command} detected`);
-      if (command === 'addmember') {
+      if (command === 'subscribe') {
         const [name, number] = args;
         if (!name) return telegram.sendMessage(cid, `Enter the person's name followed by the number. Please.`);
         if (!/[A-z]/.test(name)) return telegram.sendMessage(cid, `Don't use any stupid characters for the name.`);
@@ -33,7 +33,7 @@ ${text}`;
         const ret = await addMember(name, number, cid, message.chat.title, `${firstName} ${lastName}`, title);
         if (ret) telegram.sendMessage(cid, ret);
       }
-      if (command === 'removemember') {
+      if (command === 'unsubscribe') {
         const [number] = args;
         if (!number) return telegram.sendMessage(cid, `Tell me what ${name}'s freakin' number is. I don't just magically know it.`);
         if (!/[0-9]{10}/.test(number)) return telegram.sendMessage(cid, `${number} isn't 10 digits, dummy.`);
