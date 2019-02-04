@@ -44,7 +44,7 @@ export const fromSms = async (number, text) => {
     });
 
     if (fruit) {
-      response = `That's awesome! I'll let everyone know you're bringing an ${fruit}. Feel free to say hello now :) To stop messages at any point, tell me DINGO.`;
+      response = `That's awesome! I'll let everyone know you're bringing ${fruit.slice(-1) == 's' ? 'a bunch of' : 'one'} ${fruit}. Feel free to say hello now :) To stop messages at any point, tell me DINGO.`;
       connection.verified = true;
       await setMember(connection);
       const telegramNotification = `Please welcome ${connection.name}, who has graciously brought ${fruit.slice(-1) == 's' ? 'a bunch of' : 'one'} ${fruit.toLowerCase()} to share.`
