@@ -32,7 +32,7 @@ const getPhase = (window) => {
 };
 
 const getPhaseEmoji = (window) => {
-  return getEmoji('Builds');
+  return getEmoji(getPhase(window));
 };
 
 const getYear = (window) => {
