@@ -22,6 +22,9 @@ export const fromTelegram = async (cid, message) => {
     Logger.info(`Could not find member by ${cid}.`);
     return null;
   }
+  if (!connection.verified) {
+    Logger.info(`${connection.name} has not verified yet.`);
+  }
   sendSms(connection.number, message);
 }
 export const fromSms = async (number, text) => {
