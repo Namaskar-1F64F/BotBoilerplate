@@ -70,7 +70,7 @@ export const addMember = async (name, number, cid, invitor, title) => {
   const connection = new Connection(name, number, cid);
   setMember(connection);
   inviteSms(connection, invitor, title);
-  return `I have invited ${name} and will ask what fruit he will be brining.`;
+  return `I have invited ${name} and will ask what fruit he will be bringing.`;
 }
 const setMember = async (connection) => {
   // This is just a bad way to set up bidirectional map like functionality
