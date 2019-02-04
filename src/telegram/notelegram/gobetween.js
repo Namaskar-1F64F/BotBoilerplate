@@ -65,7 +65,7 @@ export const addMember = async (name, number, cid, invitor, title) => {
   if (member) {
     if (!member.verified) return `I am still waiting on ${name}'s response.`;
     if (member.cid == cid) return `They are already here. Either they're not talking, or you're a bad observer.`;
-    return `${number} is already associated with a different chat. We're only supporting one chat at once because multiple chats is honestly very hard to code and I can't figure out a good way for the person sending the SMS to choose which chat to specify which chat they want their message sent. Tell the person to reply DINGO to any message to remove themselves from the other chat.`;
+    return `${number} is already associated with a different chat. We're only supporting one chat at once because multiple chats is honestly very hard to code and I can't figure out a good way for the person sending the SMS to specify which chat they want their message sent. Tell the person to reply DINGO to any message to remove themselves from the other chat.`;
   }
   const connection = new Connection(name, number, cid);
   setMember(connection);
