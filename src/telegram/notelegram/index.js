@@ -9,20 +9,16 @@ const telegram = getBot(process.env.SMS_TELEGRAM_TOKEN, 'No Telegram');
 
 try {
   telegram.on("text", async (message) => {
-    const cid = message.chat.id;
-    const firstName = message.from.first_name;
-    const lastName = message.from.last_name;
-    const { chat: { title } } = message;
-    const { text } = message;
+    const { chat: { id: cid, title }, text, from: { first_name: firstName, last_name: lastName, username } } = message;
     const messageToSend = `${firstName} ${lastName}: ${text}`;
     Logger.info(messageToSend);
     if (text.length > 1 && text[0] === "/") {
+      if (username != 'svendog') return telegram.sendMessage(cid, `Sorry only svendog can give me commands.`);
       const fullCommand = text.substring(1);
       const split = fullCommand.split(' ');
       const command = split[0].toLowerCase();
       const args = split.splice(1);
-      Logger.info(`Received command from ${cid} ${command}`);
-      Logger.info(`Command ${command} detected`);
+      Logger.info(`Received command from ${firstName} ${lastName} (${cid}): ${fullCommand}`);
       if (command === 'subscribe') {
         const [name, number] = args;
         if (!name) return telegram.sendMessage(cid, `Enter the person's name followed by the number. Please.`);

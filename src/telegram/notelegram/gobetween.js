@@ -61,7 +61,9 @@ export const fromSms = async (number, text) => {
 }
 export const addMember = async (name, number, cid, invitor, title) => {
   number = '+1' + number;
-  const member = await getMember(number);
+  const cidMember = await getMember(String(cid));
+  const member = await getMember(String(number));
+  if (cidMember != null && member == null) return `There is already someone recieving messages from this chat eek.`;
   if (member) {
     if (!member.verified) return `I am still waiting on ${name}'s response.`;
     if (member.cid == cid) return `They are already here. Either they're not talking, or you're a bad observer.`;
