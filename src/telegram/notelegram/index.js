@@ -14,8 +14,7 @@ try {
     const lastName = message.from.last_name;
     const { chat: { title } } = message;
     const { text } = message;
-    const messageToSend = `New message from ${firstName} ${lastName} in ${title}:
-${text}`;
+    const messageToSend = `${firstName} ${lastName}: ${text}`;
     Logger.info(messageToSend);
     if (text.length > 1 && text[0] === "/") {
       const fullCommand = text.substring(1);
