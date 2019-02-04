@@ -24,6 +24,7 @@ export const fromTelegram = async (cid, message) => {
   }
   if (!connection.verified) {
     Logger.info(`${connection.name} has not verified yet.`);
+    return null;
   }
   sendSms(connection.number, message);
 }
