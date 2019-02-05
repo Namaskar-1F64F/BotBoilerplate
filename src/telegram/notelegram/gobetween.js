@@ -15,6 +15,7 @@ class Connection {
     return this.number + this.name;
   }
 }
+
 export const fromTelegram = async (cid, message) => {
   Logger.info(`Recieved message sending to Twilio`);
   const connection = await getMember(cid);
@@ -28,6 +29,7 @@ export const fromTelegram = async (cid, message) => {
   }
   sendSms(connection.number, message);
 }
+
 export const fromSms = async (number, text) => {
   Logger.info(`Recieved message from ${number} with message ${text}`);
   const connection = await getMember(number);
@@ -63,6 +65,7 @@ export const fromSms = async (number, text) => {
     sendTelegram(connection.cid, message);
   }
 }
+
 export const addMember = async (name, number, cid, invitor, title) => {
   number = '+1' + number;
   const cidMember = await getMember(String(cid));
@@ -78,6 +81,7 @@ export const addMember = async (name, number, cid, invitor, title) => {
   inviteSms(connection, invitor, title);
   return `I have invited ${name} and will ask what fruit he will be bringing.`;
 }
+
 const setMember = async (connection) => {
   // This is just a bad way to set up bidirectional map like functionality
   const identifier = `${connection.number}${connection.name}`;
@@ -85,11 +89,13 @@ const setMember = async (connection) => {
   await Storage.setItem(String(connection.number), identifier);
   await Storage.setItem(identifier, connection);
 }
+
 const getMember = async (ident) => {
   if (!ident) return null;
   const identifier = await Storage.getItem(String(ident));
   return await Storage.getItem(String(identifier));
 }
+
 export const removeMember = async (number, title, kicker) => {
   if (!number) return null;
   if (number[0] != '+') number = '+1' + number;
