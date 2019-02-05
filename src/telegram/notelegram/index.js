@@ -1,11 +1,11 @@
 import Logger from '../../util/logger';
 import { getBot } from '../../util/telegram';
-import { fromTelegram, addMember, removeMember } from './gobetween';
-import { init } from '../../util/db.service';
+import { fromTelegram, addMember, remove } from './gobetween';
+import { init } from '../../util/database';
 
 const telegram = getBot(process.env.SMS_TELEGRAM_TOKEN, 'No Telegram');
 
-init().then( success => {
+init().then(async success => {
   if (success) {
     require('./server.js');
 
@@ -14,7 +14,6 @@ init().then( success => {
     telegram.on("text", async (message) => {
       const { chat: { id: cid, title }, text, from: { first_name: firstName, last_name: lastName, username } } = message;
       const messageToSend = `${firstName} ${lastName}: ${text}`;
-      Logger.info(messageToSend);
       if (text.length > 1 && text[0] === "/") {
         if (username != 'svendog') return telegram.sendMessage(cid, `Sorry only svendog can give me commands.`);
         const fullCommand = text.substring(1);
@@ -28,14 +27,14 @@ init().then( success => {
           if (!/[A-z]/.test(name)) return telegram.sendMessage(cid, `Don't use any stupid characters for the name.`);
           if (!number) return telegram.sendMessage(cid, `Tell me what ${name}'s freakin' number is. I don't just magically know it.`);
           if (!/[0-9]{10}/.test(number)) return telegram.sendMessage(cid, `${number} isn't 10 digits, dummy.`);
-          const ret = await addMember(name, number, cid, message.chat.title, `${firstName} ${lastName}`, title);
+          const ret = await addMember(name, number, cid, title, `${firstName} ${lastName}`);
           if (ret) telegram.sendMessage(cid, ret);
         }
         if (command === 'unsubscribe') {
           const [number] = args;
-          if (!number) return telegram.sendMessage(cid, `Tell me what ${name}'s freakin' number is. I don't just magically know it.`);
+          if (!number) return telegram.sendMessage(cid, `Unsubscribe what? You think this is a game?`);
           if (!/[0-9]{10}/.test(number)) return telegram.sendMessage(cid, `${number} isn't 10 digits, dummy.`);
-          const ret = await removeMember(number, message.chat.title, `${firstName} ${lastName}`);
+          const ret = await remove(number, title, `${firstName} ${lastName}`, cid);
           if (ret) telegram.sendMessage(cid, ret);
         }
       } else {

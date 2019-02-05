@@ -15,9 +15,9 @@ export const sendSms = (to, body) => {
     .catch(ret => Logger.error(JSON.stringify(ret)));
 }
 
-export const inviteSms = ({ number }, invitor, title) => {
+export const inviteSms = (number, title, inviter) => {
   Logger.info(`Sending invitation to ${number}.`)
-  const message = `${title} has invited you to join the ${invitor} group on Telegram! This will forward all messages from the chat to your phone. You can reply by texting back to me! Reply with what fruit you are bringing to open communication, or with DINGO to deny the invitation. Questions? t.me/svendog`
+  const message = `${inviter} has invited you to join the ${title} group on Telegram! This will forward all messages from the chat to your phone. You can reply by texting back to me! Reply with what fruit you are bringing to open communication, or with DINGO to deny the invitation. Questions? t.me/svendog`
   if (numToday++ < dailyMax) twilio
     .messages
     .create({ from: twilioNumber, to: number, body: message, })
