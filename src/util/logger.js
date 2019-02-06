@@ -27,6 +27,6 @@ export default createLogger({
         )
       )
     }),
-    //new transports.File({ filename })
+    new transports.File({ filename })
   ]
 });

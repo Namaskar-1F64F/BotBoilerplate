@@ -5,8 +5,9 @@ const twilio = new Twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH);
 const twilioNumber = process.env.TWILIO_NUMBER;
 const dailyMax = 30;
 let numToday = 0;
+
 export const sendSms = (to, body) => {
-  Logger.info(`Sending message to ${to}.`);
+  Logger.verbose(`Sending message to ${to}.`);
 
   if (numToday++ < dailyMax) twilio
     .messages

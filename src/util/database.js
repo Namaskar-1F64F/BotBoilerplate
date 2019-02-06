@@ -12,9 +12,11 @@ export const init = async () => {
     return false;
   }
 }
+
 const getCollection = (collection = 'People') => {
   return mongoClient.db('Forward').collection(collection);
 }
+
 export const getMembers = async (cid) => {
   try {
     if (cid == null) return [];

@@ -1,5 +1,6 @@
-import Logger from './logger';
 import TelegramBot from 'node-telegram-bot-api';
+import Logger from './logger';
+
 let telegramBots = new Map();
 
 const getBot = (token, use) => {

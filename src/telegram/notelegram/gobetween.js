@@ -2,7 +2,7 @@ import Logger from '../../util/logger';
 import { sendSms, inviteSms } from './twilio';
 import { sendTelegram } from './index';
 import { fruits } from './fruits';
-import { getMember, getMembers, verifyMember, removeMember, storeMember, createMember, reactivateMember } from '../../util/database';
+import { getMember, getMembers, verifyMember, removeMember, createMember, reactivateMember } from '../../util/database';
 
 export const fromTelegram = async (cid, message) => {
   Logger.info(`Recieved message sending to Twilio`);
@@ -28,19 +28,16 @@ export const fromSms = async (number, text) => {
     Logger.info(`Could not find member by ${number}.`);
     sendSms(number, `You are not being forwarded any messages from me! That's awesome because you probably already have Telegram! Rock on! Questions? t.me/svendog`);
     return null;
-  }
-  if (!member.active) {
+  } else if (!member.active) {
     Logger.info(`Member ${number} is not currently active.`);
     sendSms(number, `You aren't subscribed to any chat. Ask someone who's got Telegram to add you!`);
     return null;
 
-  }
-  if (text.toLowerCase().includes('dingo')) {
-    remove(number);
+  } else if (text.toLowerCase().includes('dingo')) {
+    await unsubscribe(number);
     const telegramResponse = `${member.name} is done listening to this drivel and will no longer be forwarded messages.`;
     return sendTelegram(member.cid, telegramResponse);
-  }
-  if (!member.verified) {
+  } else if (!member.verified) {
     let fruit, response;
     text.split(' ').forEach(word => {
       if (fruits.includes(word.toLowerCase()) || (word.slice(-1) == 's' && fruits.includes(word.slice(0, -1).toLowerCase()))) fruit = word;
@@ -66,16 +63,16 @@ export const fromSms = async (number, text) => {
   }
 }
 
-export const addMember = async (name, number, cid, title, inviter) => {
+export const subscribe = async (name, number, cid, title, inviter) => {
   number = '+1' + number;
-  const member = await getMember(String(number));
+  const member = await getMember(number);
   if (member == null) {
     const success = await createMember({ cid, name, number });
     if (success) {
       inviteSms(number, title, inviter);
       return `I have invited ${name} and will ask what fruit he will be bringing.`;
     } else {
-      return `I was unable to invite ${name}. Sorry.`;
+      return `I was unable to invite ${name}. Tell Kyle to fix his code.`;
     }
   }
   if (member.active) {
@@ -92,9 +89,9 @@ export const addMember = async (name, number, cid, title, inviter) => {
   }
 }
 
-export const remove = async (number, title, kicker, cid) => {
+export const unsubscribe = async (number, title, kicker, cid) => {
   if (!number) return null;
-  if (number[0] != '+') number = '+1' + number;
+  if (!number.startsWith('+1')) number = '+1' + number;
   Logger.info(`Removing member with ${number}`);
   const member = await getMember(number);
   if (member == null || !member.active || member.cid != cid) return `No one found with the number ${number}. Yes, I know I added the +1.`;
@@ -106,6 +103,6 @@ export const remove = async (number, title, kicker, cid) => {
   if (success) {
     return `Removed ${name}. Bye bye.`
   } else {
-    return `I was unable to remove ${member.name}. Sorry.`;
+    return `I was unable to remove ${member.name}. Tell Kyle his code sucks.`;
   }
 }

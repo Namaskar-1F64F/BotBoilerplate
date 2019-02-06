@@ -117,7 +117,7 @@ const checkWebsite = (cid, gid) => {
         if (time && from) {
           var left = (time - from);
           if (left < 1980 && left > 1620) {
-            const message = `*${seasonEmoji} ${currentState.year}*${phaseEmoji} [${currentState.phase}](http://webdiplomacy.net/board.php?gameID="${gid}")
+            const message = `*${seasonEmoji} ${currentState.year}* - ${phaseEmoji} [${currentState.phase}](http://webdiplomacy.net/board.php?gameID="${gid}")
 ${getEmoji('hourglass')} _A half hour remains._`;
             Logger.verbose(message);
             telegram.sendMessage(cid, message, { parse_mode: "Markdown", disable_web_page_preview: true });
