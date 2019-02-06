@@ -5,7 +5,7 @@ let mongoClient;
 
 export const init = async () => {
   try {
-    mongoClient = await MongoClient.connect(process.env.MONGO_CONNECTION_STRING);
+    mongoClient = await MongoClient.connect(process.env.MONGO_CONNECTION_STRING, { useNewUrlParser: true });
     return true;
   } catch (error) {
     Logger.error(error);
@@ -46,7 +46,7 @@ export const verifyMember = async (number) => {
   try {
     number = String(number);
     Logger.info(`DB: verifyMember with number ${number}.`);
-    await getCollection().updateOne({ number }, { $set: { verified: true} });
+    await getCollection().updateOne({ number }, { $set: { verified: true } });
     return true
   }
   catch (error) {
@@ -60,7 +60,7 @@ export const reactivateMember = async (number, cid) => {
     number = String(number);
     cid = String(cid);
     Logger.info(`DB: reactivateMember with number ${number}.`);
-    await getCollection().updateOne({ number }, { $set: { cid, verified: false, active: true} });
+    await getCollection().updateOne({ number }, { $set: { cid, verified: false, active: true } });
     return true
   }
   catch (error) {
