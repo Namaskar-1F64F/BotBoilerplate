@@ -25,3 +25,19 @@ export const inviteSms = (number, title, inviter) => {
     .then(ret => Logger.info(JSON.stringify(ret)))
     .catch(ret => Logger.error(JSON.stringify(ret)));
 }
+
+export const usage = async () => {
+  let testing = 0.93;
+  let numbers = 0.00;
+  let messages = 0.00;
+  try {
+    const sms = await twilio.usage.records.list({ category: 'sms' });
+    const phonenumbers = await twilio.usage.records.list({ category: 'phonenumbers' });
+    sms.forEach(record => { messages += record.price });
+    phonenumbers.forEach(record => { numbers += record.price });
+    return { testing, numbers, messages };
+  } catch (error) {
+    Logger.error(error);
+    return null
+  }
+}

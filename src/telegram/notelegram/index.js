@@ -2,12 +2,15 @@ import Logger from '../../util/logger';
 import { getBot } from '../../util/telegram';
 import { fromTelegram, subscribe, unsubscribe } from './gobetween';
 import { init } from '../../util/database';
+import { usage } from './twilio';
 
-Logger.info('Started No Telegram Telegram bot.');
-const telegram = getBot(process.env.SMS_TELEGRAM_TOKEN, 'No Telegram');
+let telegram;
 
 init().then(async success => {
   if (success) {
+    Logger.info('Connected to databse.');
+    telegram = getBot(process.env.SMS_TELEGRAM_TOKEN, 'No Telegram');
+    Logger.info('Started No Telegram Telegram bot.');
     require('./server.js');
 
     telegram.on("text", async (message) => {
@@ -26,7 +29,7 @@ init().then(async success => {
       }
     });
   } else {
-    Logger.error("Error connecting to database.");
+    Logger.error('Error connecting to database.');
   }
 });
 
@@ -44,7 +47,9 @@ const commandHandler = (command, args, context) => {
   } else if (command == 'unsubscribe') {
     const [number] = args;
     unsubscribeCommand({ ...context, number });
-  } else if (command == 'help') helpCommand(context);
+  } else if (command == 'usage') usageCommand(context)
+  else if (command == 'help') helpCommand(context);
+
 }
 
 const subscribeCommand = async ({ name, number, cid, firstName, lastName, title }) => {
@@ -61,6 +66,12 @@ const unsubscribeCommand = async ({ number, cid, firstName, lastName, title }) =
   if (!/[0-9]{10}/.test(number)) return telegram.sendMessage(cid, `${number} isn't 10 digits, dummy.`);
   const ret = await unsubscribe(number, title, `${firstName} ${lastName}`, cid);
   if (ret) telegram.sendMessage(cid, ret);
+}
+
+const usageCommand = async ({ cid }) => {
+  const { testing, numbers, messages } = await usage();
+  if (testing != null) return telegram.sendMessage(cid, `On the Twilio API, I have spent $${testing.toFixed(2)} testing, $${(messages - testing).toFixed(2)} forwarding actual messages, and $${numbers.toFixed(2)} on the phone number!`);
+  telegram.sendMessage(cid, `This is where I would how much I cost so far, but something went wrong. I guess I haven't spent enough.`);
 }
 
 const helpCommand = ({ cid }) => {
