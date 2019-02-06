@@ -1,6 +1,9 @@
 import Logger from '../../util/logger';
 import { Twilio } from 'twilio';
 
+if (process.env.TWILIO_SID == null || process.env.TWILIO_AUTH == null || process.env.TWILIO_NUMBER == null)
+  throw 'Add TWILIO_SID, TWILIO_AUTH, and TWILIO_NUMBER to your environment, please.';
+
 const twilio = new Twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH);
 const twilioNumber = process.env.TWILIO_NUMBER;
 const dailyMax = 30;
@@ -27,7 +30,7 @@ export const inviteSms = (number, title, inviter) => {
 }
 
 export const usage = async () => {
-  let testing = 0.93;
+  let testing = process.env.TESTING_COST || 0.00;
   let numbers = 0.00;
   let messages = 0.00;
   try {

@@ -13,4 +13,4 @@ app.post('/sms', (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/xml' });
   res.end();
 });
-app.listen(process.env.TWILIO_PORT);
+app.listen(process.env.TWILIO_PORT || 3053);

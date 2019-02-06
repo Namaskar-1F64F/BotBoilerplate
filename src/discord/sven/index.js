@@ -8,7 +8,7 @@ import * as fs from 'fs';
 const bot = new Discord.Client();
 const update = () => {
   Find('name', 'StardewModdingAPI.exe').then((list) => {
-    if (list.length >= 1) {
+    if (list.length >= 1 && process.env.ONLINE_PLAYERS_DIRECTORY != null) {
       bot.user.setStatus('online');
       fs.readFile(process.env.ONLINE_PLAYERS_DIRECTORY, 'utf8', function (err, players) {
         if (err) Logger.error(`stardew discord ${err}`);
@@ -26,7 +26,7 @@ bot.on('message', function (message) {
     Logger.info(`Sending ${code} to ${message.channel}`)
     message.channel.send(code).catch(Logger.error);
   }
-  if (message.channel.type === "dm" && message.content == '!stardew') {
+  if (message.channel.type === "dm" && message.content == '!stardew' && process.env.INVITE_CODE_DIRECTORY != null) {
     var fs = require('fs');
     fs.readFile(process.env.INVITE_CODE_DIRECTORY, 'utf8', (err, code) => {
       if (err) throw err;
