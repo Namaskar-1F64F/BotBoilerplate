@@ -70,7 +70,7 @@ export const subscribe = async (name, number, cid, title, inviter) => {
     const success = await createMember({ cid, name, number });
     if (success) {
       inviteSms(number, title, inviter);
-      return `I have invited ${name} and will ask what fruit he will be bringing.`;
+      return `I have invited ${name} and will ask what fruit they will be bringing.`;
     } else {
       return `I was unable to invite ${name}. Tell Kyle to fix his code.`;
     }
@@ -85,7 +85,7 @@ export const subscribe = async (name, number, cid, title, inviter) => {
   if (member.cid == cid) {
     return `Well, ${name} was removed from here before, but probably didn't bring enough fruit. I'll make sure they bring something better this time.`;
   } else {
-    return `I have invited ${name} and will ask what fruit he will be bringing.`;
+    return `I have invited ${name} and will ask what fruit they will be bringing.`;
   }
 }
 
