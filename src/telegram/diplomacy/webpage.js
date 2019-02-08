@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import request from 'request';
 import { getEmoji } from './util';
 import moment from 'moment';
 
@@ -85,33 +83,4 @@ const getUnixFrom = (window) => {
   return from;
 };
 
-const download = (url, dest, cb) => { // From http://stackoverflow.com/a/32134846
-  var file = fs.createWriteStream(dest);
-  var sendReq = request.get(url);
-
-  // verify response code
-  sendReq.on('response', function (response) {
-    if (response.statusCode !== 200) {
-      return cb('Response status was ' + response.statusCode);
-    }
-  });
-
-  // check for request errors
-  sendReq.on('error', function (err) {
-    fs.unlink(dest);
-    return cb(err.message);
-  });
-
-  sendReq.pipe(file);
-
-  file.on('finish', function () {
-    file.close(cb);  // close() is async, call cb after close completes.
-  });
-
-  file.on('error', function (err) { // Handle errors
-    fs.unlink(dest); // Delete the file async. (But we don't 'check' the result)
-    return cb(err.message);
-  });
-};
-
-export { getReadyStates, getPhase, getYear, getTime, download, getUnixTime, getUnixFrom, getPhaseEmoji, getSeasonEmoji, getUnixFinalTime, getUnixFinalDay };
+export { getReadyStates, getPhase, getYear, getTime, getUnixTime, getUnixFrom, getPhaseEmoji, getSeasonEmoji, getUnixFinalTime, getUnixFinalDay };

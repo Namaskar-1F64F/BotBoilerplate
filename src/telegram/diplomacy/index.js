@@ -1,42 +1,71 @@
 import Logger from '../../util/logger';
 import { getBot } from '../../util/telegram';
-import { init, start, stop } from './subscription';
+import { init, add, stop } from './subscription';
+import { initialize } from './database';
 
-const telegram = getBot(process.env.DIPLOMACY_TELEGRAM_TOKEN, "WebDiplomacy");
-init();
-Logger.info('Started WebDiplomacy Telegram Bot.');
+let telegram;
 
-telegram.on("text", function (message) {
-  const cid = message.chat.id; // use chat id because it is unique to individual chats
-  const { text } = message;
-  const command = text.toLowerCase();
-  Logger.info(`Received command from ${cid} ${command}`);
-  if (command.indexOf("/monitor") === 0) { // given monitor message
-    var split = message.text.split(' ');
-    if (split.length == 1) {
-      const message = `Specify a game ID
-      \`/monitor gameID\``;
-      Logger.verbose(message);
-      telegram.sendMessage(cid, message);
-      return; // don't start games for undefined id
+initialize().then(async success => {
+  if (success) {
+    telegram = getBot(process.env.DIPLOMACY_TELEGRAM_TOKEN, "WebDiplomacy");
+    init();
+    Logger.info('Started WebDiplomacy Telegram Bot.');
+
+    telegram.on("text", async (message) => {
+      const { chat: { id: cid, title }, text, from: { first_name: firstName, last_name: lastName, username } } = message;
+      if (text.length > 1 && text[0] === "/") {
+        const fullCommand = text.substring(1);
+        const split = fullCommand.split(' ');
+        const command = split[0].toLowerCase();
+        const args = split.splice(1);
+        Logger.info(`Received command from ${username} (${firstName} ${lastName}) in chat ${title} (${cid}): ${fullCommand}`);
+        commandHandler(command, args, { cid, title, firstName, lastName });
+      }
+    });
+
+    const commandHandler = (command, args, context) => {
+      if (command == null) {
+        return;
+      } else if (command == 'monitor') {
+        const [gid] = args;
+        monitorCommand({ ...context, gid });
+      } else if (command == 'unsubscribe') {
+        const [number] = args;
+        stopCommand({ ...context, number });
+      } else if (command == 'start' || command == 'help') {
+        const [number] = args;
+        helpCommand({ ...context, number });
+      }
     }
-    if (split[2] != undefined) cid = split[2];
-    // start subscription for specific chat
-    start(cid, split[1], split[2] == undefined);
-  }
-  else if (command.indexOf("/stop") === 0) { // given monitor message
-    stop(cid);
-  }
-  else if (command.indexOf("/start") === 0 || command.indexOf("/help") === 0) {
-    const message = `*Welcome to webDiplomacy bot!*
 
-    To get started, locate the  \`gameID\` (found in the URL of a webDiplomacy game) you want to
-     monitor and send the \n\n \`/monitor \<GAME_ID\>\` command to monitor a game.
+    const monitorCommand = ({ gid, cid }) => {
+      if (gid == null) {
+        const message = `I can't monitor everything, ha!\n\`/monitor <Your game ID goes here, dummy>\``;
+        Logger.verbose(message);
+        telegram.sendMessage(cid, message, { parse_mode: 'Markdown' });
+        return;
+      }
+      add(cid, gid);
+    }
 
-    To stop monitoring, send the command \`/stop\`.
+    const stopCommand = ({ cid }) => {
+      stop(cid);
+    }
 
-    [Visit the GitHub](https://github.com/Timone/WebDiplomacyTelegramBot)`;
-    Logger.verbose(message);
-    telegram.sendMessage(cid, message, { parse_mode: "Markdown" });
+    const helpCommand = ({ cid }) => {
+      const message = `*Check me out! I'm the Web Diplomacy bot!*
+
+To get started, locate the  \`gameID\` (found in the URL of a webDiplomacy game) you want to monitor and send me the
+
+\`/monitor <GAME_ID>\` command to monitor a game.
+
+To stop monitoring, send the command
+
+\`/stop\`.
+
+Questions? t.me/svendog`;
+      Logger.verbose(message);
+      telegram.sendMessage(cid, message, { parse_mode: "Markdown" });
+    }
   }
 });

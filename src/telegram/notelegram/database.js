@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import Logger from './logger';
+import Logger from '../../util/logger';
 
 let mongoClient;
 
@@ -34,7 +34,7 @@ export const getMember = async (number) => {
     number = String(number);
     Logger.info(`DB: getMember with number ${number}.`);
     const member = await getCollection().findOne({ number });
-    Logger.info(member);
+    Logger.info(JSON.stringify(member));
     if (member) return member;
     Logger.error(`Could not find member with number ${number}`);
     return null;

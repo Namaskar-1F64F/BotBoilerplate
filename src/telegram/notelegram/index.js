@@ -1,7 +1,7 @@
 import Logger from '../../util/logger';
 import { getBot } from '../../util/telegram';
 import { fromTelegram, subscribe, unsubscribe } from './gobetween';
-import { init } from '../../util/database';
+import { init } from './database';
 import { usage } from './twilio';
 
 let telegram;
@@ -49,7 +49,6 @@ const commandHandler = (command, args, context) => {
     unsubscribeCommand({ ...context, number });
   } else if (command == 'usage') usageCommand(context)
   else if (command == 'help') helpCommand(context);
-
 }
 
 const subscribeCommand = async ({ name, number, cid, firstName, lastName, title }) => {

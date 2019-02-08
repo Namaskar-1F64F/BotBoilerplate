@@ -2,7 +2,7 @@ import Logger from '../../util/logger';
 import { sendSms, inviteSms } from './twilio';
 import { sendTelegram } from './index';
 import { fruits } from './fruits';
-import { getMember, getMembers, verifyMember, removeMember, createMember, reactivateMember } from '../../util/database';
+import { getMember, getMembers, verifyMember, removeMember, createMember, reactivateMember } from './database';
 
 export const fromTelegram = async (cid, message) => {
   Logger.info(`Recieved message sending to Twilio`);
