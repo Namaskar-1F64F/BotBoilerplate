@@ -1,5 +1,5 @@
 import Logger from '../../util/logger';
-import { getBot } from '../../util/telegram';
+import TelegramBot from 'node-telegram-bot-api';
 import { fromTelegram, subscribe, unsubscribe } from './gobetween';
 import { init } from './database';
 import { usage } from './twilio';
@@ -9,7 +9,7 @@ let telegram;
 init().then(async success => {
   if (success) {
     Logger.info('Connected to databse.');
-    telegram = getBot(process.env.SMS_TELEGRAM_TOKEN, 'No Telegram');
+    telegram = new TelegramBot(process.env.SMS_TELEGRAM_TOKEN, { polling: true });
     Logger.info('Started No Telegram Telegram bot.');
     require('./server.js');
 

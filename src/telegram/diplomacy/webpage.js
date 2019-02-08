@@ -25,17 +25,13 @@ const getReadyStates = (window) => {
   return readyStates;
 };
 
-const getPhase = (window) => {
-  return window.$('.gamePhase').text();
-};
+const getPhase = (window) => window.$('.gamePhase').text();
 
-const getPhaseEmoji = (window) => {
-  return getEmoji(getPhase(window));
-};
+const getPhaseEmoji = (window) => getEmoji(getPhase(window));
 
-const getYear = (window) => {
-  return window.$('.gameDate').text();
-};
+const getYear = (window) => window.$('.gameDate').text();
+
+const getTime = (window) => window.$('.timeremaining').text();
 
 const getSeasonEmoji = (window) => {
   const year = getYear(window);
@@ -43,9 +39,6 @@ const getSeasonEmoji = (window) => {
   return season ? getEmoji(season) : '';
 };
 
-const getTime = (window) => {
-  return window.$('.timeremaining').text();
-};
 
 const getUnixFinal = (window) => {
   const span = window.document.querySelector('.timestamp');

@@ -1,12 +1,13 @@
 import * as fs from 'fs';
 import Logger from '../../util/logger';
-import { getBot } from '../../util/telegram';
+import TelegramBot from 'node-telegram-bot-api';
 
-Logger.info('Started Stardew Valley Telegram bot.');
-const telegram = getBot(process.env.STARDEW_TELEGRAM_TOKEN, 'Stardew Valley');
 try {
+  const telegram = new TelegramBot(process.env.STARDEW_TELEGRAM_TOKEN, { polling: true });
+  Logger.info('Started Stardew Valley Telegram bot.');
+
   telegram.on('text', (message) => {
-    const {chat: { id: cid}, text} = message;
+    const { chat: { id: cid }, text } = message;
     const command = text.toLowerCase();
     Logger.info(`Received command from ${cid} ${command}.`);
     if (command.includes('stardewcode')) {

@@ -7,24 +7,20 @@ let intervals = {}; // Store intervals which can be later stopped by the /stop c
 export const add = async (cid, gid) => {
   try {
     if (await getSubscription(cid) == null) {
-      await addSubscription(cid, gid);
-      return true;
-    }
-    else {
-      return false;
+      return await addSubscription(cid, gid);
     }
   }
   catch (err) {
-    Logger.error(`subscription.js ${err}`);
-    return false;
+    Logger.error(`Tried to add game with ID ${gid} for chat ${cid}, but got an error: ${err}`);
   }
+  return false;
 };
 
-export const start = async (cid, gid) => {
+export const start = async (cid, gid, interval) => {
   checkWebsite(cid, gid);
   intervals[cid] = setInterval(function () {
     checkWebsite(cid, gid);
-  }, 360000);
+  }, interval);
 }
 
 export const stop = (cid) => {
@@ -35,11 +31,12 @@ export const stop = (cid) => {
 export const init = async () => {
   const subscriptions = await getSubscriptions();
   if (subscriptions) {
-    subscriptions.forEach(subscription => {
+    const slice = (process.env.REFRESH_INTERVAL_MINUTES * 60 * 1000) / subscriptions.length;
+    subscriptions.forEach((subscription, idx) => {
       const { cid, gid } = subscription;
-      const sleep = 360000;
-      Logger.info(`Auto starting game ${cid} for chat ${gid} at time t+${sleep}`, cid, gid, sleep);
-      start(cid, gid);
+      const interval = slice * idx;
+      Logger.info(`Auto starting game ${cid} for chat ${gid} at time t+${interval}`);
+      start(cid, gid, interval);
     });
   }
 }

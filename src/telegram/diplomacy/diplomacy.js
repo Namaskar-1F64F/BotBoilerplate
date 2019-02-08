@@ -1,5 +1,5 @@
 import Logger from '../../util/logger';
-import { getBot } from '../../util/telegram';
+import { sendTelegramMessage, sendTelegramPhoto } from './index';
 import { getPreviousState, getCurrentState } from './setup';
 import { getPhase, getYear, getTime, getReadyStates, getUnixTime, getUnixFrom, getPhaseEmoji, getSeasonEmoji, getUnixFinalTime, getUnixFinalDay } from './webpage';
 import { JSDOM } from 'jsdom'; // used to create dom to navigate through jQuery
@@ -7,7 +7,6 @@ import jQuery from 'jquery';
 import hash from 'object-hash'; // hashing messages for quick lookups
 import { saveGame } from './database';
 import { formatMessageTelegram, getEmoji } from './util';
-const telegram = getBot(process.env.DIPLOMACY_TELEGRAM_TOKEN, "WebDiplomacy");
 
 const checkWebsite = async (cid, gid) => {
   let countries = ["England", "France", "Italy", "Germany", "Austria", "Turkey", "Russia"];
@@ -46,7 +45,7 @@ const checkWebsite = async (cid, gid) => {
                 var globalMessage = message.country <= 7 ? (getEmoji(countries[message.country - 1])
                   + " ") : "" + message.text;
                 Logger.verbose(`Sending global message to ${cid} for ${gid}:\n${globalMessage}`);
-                telegram.sendMessage(cid, globalMessage.length == 0 ? 'Global message.' : globalMessage, { parse_mode: "HTML" });
+                sendTelegramMessage(cid, globalMessage.length == 0 ? 'Global message.' : globalMessage, { parse_mode: "HTML" });
               }
             }
           }
@@ -81,7 +80,7 @@ const checkWebsite = async (cid, gid) => {
         phaseMessage += getEmoji(currentState.readyStates.status.completed[i]);
       }
       Logger.verbose(`Sending photo-phase change to ${cid} for ${gid}:\n${phaseMessage}`);
-      telegram.sendPhoto(cid, `https://webdiplomacy.net/map.php?mapType=large&gameID=${gid}&turn=500`, { caption: phaseMessage });
+      sendTelegramPhoto(cid, `https://webdiplomacy.net/map.php?mapType=large&gameID=${gid}&turn=500`, { caption: phaseMessage });
     }
     // ready count changed, send alert.
     if (!previousState.initialRun // new run
@@ -100,7 +99,7 @@ const checkWebsite = async (cid, gid) => {
         readyMessage += getEmoji(currentState.readyStates.status.notreceived[i]);
       readyMessage += `\n_${timeRemaining} remaining_\n${getEmoji('mantelpiece_clock')} ${day}, ${timestamp}`;
       Logger.verbose(`Sending ready message to ${cid} for ${gid}:\n${readyMessage}`);
-      telegram.sendMessage(cid, readyMessage, { parse_mode: "Markdown", disable_web_page_preview: true });
+      sendTelegramMessage(cid, readyMessage, { parse_mode: "Markdown", disable_web_page_preview: true });
     }
     const time = getUnixTime(window);
     const from = getUnixFrom(window);
@@ -110,7 +109,7 @@ const checkWebsite = async (cid, gid) => {
         const message = `*${seasonEmoji} ${currentState.year}* - ${phaseEmoji} [${currentState.phase}](http://webdiplomacy.net/board.php?gameID="${gid}")
 ${getEmoji('hourglass')} _A half hour remains._`;
         Logger.verbose(message);
-        telegram.sendMessage(cid, message, { parse_mode: "Markdown", disable_web_page_preview: true });
+        sendTelegramMessage(cid, message, { parse_mode: "Markdown", disable_web_page_preview: true });
       }
     }
 

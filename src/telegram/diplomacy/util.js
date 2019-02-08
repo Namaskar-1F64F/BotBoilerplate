@@ -1,11 +1,12 @@
 import sanitizeHtml from 'sanitize-html';
-import emoji from 'node-emoji'; // country flags
+import emoji from 'node-emoji';
 
 const formatMessageTelegram = (message) => {
   return sanitizeHtml(message
-    .replace(/<br>/g, '\n') // Replace breaks with newlines
-    .replace(/<strong>|<\/strong>/g, '*') // Replace strong with telegram bold markdown
-    .replace(/\*/g, '')); // Replace any asterisks with nothing to not make things accidentally bold.
+    .replace(/<br>/g, '\n')
+    .replace(/\*/g, '')
+    .replace(/<strong>|<\/strong>/g, '*')
+  );
 };
 
 const emojiMap = new Map([

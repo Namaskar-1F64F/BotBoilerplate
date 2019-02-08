@@ -1,5 +1,5 @@
 import Logger from '../../util/logger';
-import { getBot } from '../../util/telegram';
+import TelegramBot from 'node-telegram-bot-api';
 import { init, add, stop } from './subscription';
 import { initialize } from './database';
 
@@ -7,7 +7,7 @@ let telegram;
 
 initialize().then(async success => {
   if (success) {
-    telegram = getBot(process.env.DIPLOMACY_TELEGRAM_TOKEN, "WebDiplomacy");
+    telegram = new TelegramBot(process.env.DIPLOMACY_TELEGRAM_TOKEN, { polling: true });
     init();
     Logger.info('Started WebDiplomacy Telegram Bot.');
 
@@ -69,3 +69,14 @@ Questions? t.me/svendog`;
     }
   }
 });
+
+export const sendTelegramMessage = (cid, message, options) => {
+  Logger.verbose(`Sending Telegram message to chat ${cid}.`);
+  telegram.sendMessage(cid, message, options);
+}
+
+export const sendTelegramPhoto  = (cid, url, options) => {
+  Logger.verbose(`Sending Telegram photo to chat ${cid}.`);
+  telegram.sendPhoto(cid, url, options);
+
+}
