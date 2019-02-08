@@ -1,12 +1,12 @@
 import Logger from '../../util/logger';
 import { loadGame, saveGame } from './database';
 
-class Game {
+class GameSnapshot {
   hashedMessages = {};
-  messages = [];
   year = '';
   phase = '';
   readyStates = {
+    status: {},
     countries: {},
     readyCount: 0
   };
@@ -17,14 +17,10 @@ const getPreviousState = async (cid) => {
   Logger.info(`Getting previous state for user ${cid}`);
   const game = await loadGame(cid);
   if (game == null) {
-    saveGame(cid, new Game());
-    return new Game();
+    await saveGame(cid, new GameSnapshot());
+    return new GameSnapshot();
   }
   return game;
 }
-const getCurrentState = () => {
-  return new Game();
-}
 
-
-export { getPreviousState, getCurrentState };
+export { GameSnapshot, getPreviousState };

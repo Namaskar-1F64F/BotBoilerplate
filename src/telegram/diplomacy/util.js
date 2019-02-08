@@ -37,15 +37,17 @@ const emojiMap = new Map([
   ['builds', 'hammer'],
   ['retreats', 'waving_white_flag'],
   ['diplomacy', 'globe_with_meridians'],
+  ['moderator', 'police_car'],
+  ['country', 'waving_black_flag']
 ]);
 
-const getEmoji = (country) => { // easier to lookup and return country flags so case doesn't mess us up
-  if (!country) return '';
-  const countryIcon = emojiMap.get(country.toLowerCase());
-  if (countryIcon) {
-    return emoji.get(countryIcon)
+const getEmoji = (phrase) => { // easier to lookup and return country flags so case doesn't mess us up
+  if (!phrase) return '';
+  const icon = emojiMap.get(phrase.toLowerCase());
+  if (icon) {
+    return emoji.get(icon)
   }
-  return emoji.get(country);
+  return emoji.get(phrase);
 };
 
 export { getEmoji, formatMessageTelegram };

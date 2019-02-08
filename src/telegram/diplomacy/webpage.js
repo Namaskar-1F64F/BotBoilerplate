@@ -39,7 +39,6 @@ const getSeasonEmoji = (window) => {
   return season ? getEmoji(season) : '';
 };
 
-
 const getUnixFinal = (window) => {
   const span = window.document.querySelector('.timestamp');
   if (!span) return 0;
@@ -76,4 +75,21 @@ const getUnixFrom = (window) => {
   return from;
 };
 
-export { getReadyStates, getPhase, getYear, getTime, getUnixTime, getUnixFrom, getPhaseEmoji, getSeasonEmoji, getUnixFinalTime, getUnixFinalDay };
+export const getContext = (window) => {
+  {
+    return {
+      from: getUnixFrom(window),
+      time: getUnixTime(window),
+      timestamp: getUnixFinalTime(window),
+      day: getUnixFinalDay(window),
+      seasonIcon: getSeasonEmoji(window),
+      timeRemaining: getTime(window),
+      readyStates: getReadyStates(window),
+      phase: {
+        text: getPhase(window),
+        icon: getPhaseEmoji(window)
+      },
+      year: getYear(window)
+    }
+  }
+}

@@ -16,11 +16,11 @@ export const add = async (cid, gid) => {
   return false;
 };
 
-export const start = async (cid, gid, interval) => {
+export const start = async (cid, gid) => {
   checkWebsite(cid, gid);
   intervals[cid] = setInterval(function () {
     checkWebsite(cid, gid);
-  }, interval);
+  }, process.env.REFRESH_INTERVAL_MINUTES * 60 * 1000);
 }
 
 export const stop = (cid) => {
@@ -36,7 +36,7 @@ export const init = async () => {
       const { cid, gid } = subscription;
       const interval = slice * idx;
       Logger.info(`Auto starting game ${cid} for chat ${gid} at time t+${interval}`);
-      start(cid, gid, interval);
+      setTimeout(start, interval, cid, gid);
     });
   }
 }

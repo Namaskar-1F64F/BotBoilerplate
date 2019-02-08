@@ -75,7 +75,7 @@ export const sendTelegramMessage = (cid, message, options) => {
   telegram.sendMessage(cid, message, options);
 }
 
-export const sendTelegramPhoto  = (cid, url, options) => {
+export const sendTelegramPhoto = (cid, url, options) => {
   Logger.verbose(`Sending Telegram photo to chat ${cid}.`);
   telegram.sendPhoto(cid, url, options);
 
