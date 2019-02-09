@@ -54,7 +54,7 @@ const checkWebsite = async (cid, gid) => {
     const newPhase = detectPhaseChange(context);
     if (newPhase) {
       Logger.verbose(`Sending photo-phase change to ${cid} for ${gid}:\n${newPhase.message}`);
-      sendTelegramPhoto(cid, `https://webdiplomacy.net/map.php?mapType=large&gameID=${gid}&turn=500`, { caption: newPhase.message });
+      sendTelegramPhoto(cid, `https://webdiplomacy.net/map.php?mapType=large&gameID=${gid}&turn=500&cache=${Math.random().toString(36).slice(2)}`, { caption: newPhase.message });
       context.currentState.phase = newPhase.phase;
       context.currentState.year = newPhase.year;
     } else {

@@ -50,7 +50,7 @@ const getUnixFinal = (window) => {
 const getUnixFinalTime = (window) => {
   const time = getUnixFinal(window);
   if (!time) return '';
-  return moment.unix(time).format('h:m A');
+  return moment.unix(time).format('h:mm A');
 };
 
 const getUnixFinalDay = (window) => {
