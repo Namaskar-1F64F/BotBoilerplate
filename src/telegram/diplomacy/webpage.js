@@ -17,7 +17,7 @@ const getReadyStates = (window) => {
       readyStates.status.ready.push(country);
     else if (status == "Completed")
       readyStates.status.completed.push(country);
-    else if (status == "Not received")
+    else if (status == "Not received" || status =="Saved")
       readyStates.status.notreceived.push(country);
     else
       readyStates.status.none.push(country.replace('- ', '')); // no status countries have a dash instead of an icon
