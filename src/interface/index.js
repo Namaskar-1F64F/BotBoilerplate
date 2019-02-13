@@ -2,46 +2,38 @@ import Logger from '../util/logger';
 import { sendDiscordMessage } from './discord';
 import { sendTelegramMessage } from './telegram';
 import { EventEmitter } from 'events';
+import { loadConnection, saveConnection } from './connection';
 
-export class InterfaceEmitter extends EventEmitter {
+class InterfaceEmitter extends EventEmitter {
   constructor() {
     super();
   }
 
-  receiveDiscordMessage(connection, text) {
-    Logger.info(`Emit discord event.`);
-    this.emit('discordMessage', connection, text);
-  }
-  receiveTelegramMessage(connection, text) {
-    Logger.info(`Emit telegram event.`);
-    this.emit('telegramMessage', connection, text);
+  receiveMessage(connection, message) {
+    Logger.info(`Emit message event.`);
+    this.emit('message', connection.id, message);
   }
 }
 
-const interfaceEmitter = new interfaceEmitter();
+export const interfaceEmitter = new InterfaceEmitter();
 
-export const sendMessage = (connection, text, options) => {
-  connection.connections.forEach(connection => {
-    if (connection.discord != null) {
-      Logger.info(`Send discord message.`);
-      sendDiscordMessage(connection, { text }, options);
-    }
-    if (connection.telegram != null) {
-      Logger.info(`Send discord message.`);
-      sendTelegramMessage(connection, { text }, options);
-    }
-  });
+export const sendMessage = async (id, text, options) => {
+  const connection = await loadConnection(id);
+  if (connection != null && connection.type == 'discord') {
+    Logger.info(`Send discord message.`);
+    sendDiscordMessage(connection, { text }, options);
+  }
+  else if (connection != null && connection.type == 'telegram') {
+    Logger.info(`Send telegram message.`);
+    sendTelegramMessage(connection, { text }, options);
+  }
 }
 
-export const receiveMessage = (connection, message) => {
-  connection.connections.forEach(connection => {
-    if (connection.discord != null) {
-      Logger.info(`Emit discord event.`);
-      interfaceEmitter.receiveDiscordMessage(connection, message);
-    }
-    if (connection.telegram != null) {
-      Logger.info(`Emit telegram event.`);
-      interfaceEmitter.receiveTelegramMessage(connection, message);
-    }
-  });
+export const receiveMessage = async (connection, message) => {
+  const success = await saveConnection(connection);
+  Logger.info('Receive Message');
+  if (success) {
+    Logger.info(`Emit message event.`);
+    interfaceEmitter.receiveMessage(connection, message);
+  }
 }

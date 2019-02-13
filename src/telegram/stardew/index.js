@@ -26,5 +26,5 @@ try {
     }
   });
 } catch (error) {
-  Logger.error(`stardew index.js\n${error}`);
+  Logger.error(`stardew index.js\n${error.stack}`);
 }

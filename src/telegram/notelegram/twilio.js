@@ -40,7 +40,7 @@ export const usage = async () => {
     phonenumbers.forEach(record => { numbers += record.price });
     return { testing, numbers, messages };
   } catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return null
   }
 }

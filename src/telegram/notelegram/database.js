@@ -8,7 +8,7 @@ export const init = async () => {
     mongoClient = await MongoClient.connect(process.env.MONGO_CONNECTION_STRING, { useNewUrlParser: true });
     return true;
   } catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return false;
   }
 }
@@ -24,7 +24,7 @@ export const getMembers = async (cid) => {
     Logger.info(`DB: getAllByChat with chat ID ${cid}.`);
     return await getCollection().find({ cid, active: true }).toArray();
   } catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return [];
   }
 }
@@ -39,7 +39,7 @@ export const getMember = async (number) => {
     Logger.error(`Could not find member with number ${number}`);
     return null;
   } catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return null;
   }
 }
@@ -52,7 +52,7 @@ export const verifyMember = async (number) => {
     return true
   }
   catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return false;
   }
 }
@@ -66,7 +66,7 @@ export const reactivateMember = async (number, cid) => {
     return true
   }
   catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return false;
   }
 }
@@ -79,7 +79,7 @@ export const removeMember = async (number) => {
     return true
   }
   catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return false;
   }
 }
@@ -99,7 +99,7 @@ export const createMember = async ({ cid, name, number }) => {
     return true;
   }
   catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return false;
   }
 }
@@ -113,7 +113,7 @@ export const updateMember = async ({ cid, name, number, verified, active }) => {
     return true;
   }
   catch (error) {
-    Logger.error(error);
+    Logger.error(error.stack);
     return false;
   }
 }

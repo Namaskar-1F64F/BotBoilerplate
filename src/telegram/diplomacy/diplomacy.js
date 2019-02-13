@@ -1,5 +1,5 @@
 import Logger from '../../util/logger';
-import { sendTelegramMessage, sendTelegramPhoto } from './index';
+import { sendMessage } from '../../interface';
 import { GameSnapshot, getPreviousState } from './setup';
 import { getContext } from './webpage';
 import { JSDOM } from 'jsdom';
@@ -44,7 +44,7 @@ const checkWebsite = async (cid, gid) => {
     if (newMessages.messages.length > 0) {
       newMessages.messages.forEach(message => {
         Logger.verbose(`Sending global message to ${cid} for ${gid}`);
-        sendTelegramMessage(cid, formatMessageTelegram(message), { parse_mode: "Markdown" });
+        sendMessage(cid, formatMessageTelegram(message), { parse_mode: "Markdown" });
       });
       context.currentState.hashedMessages = { ...context.previousState.hashedMessages, ...newMessages.hashes };
     } else {
@@ -54,7 +54,7 @@ const checkWebsite = async (cid, gid) => {
     const newPhase = detectPhaseChange(context);
     if (newPhase) {
       Logger.verbose(`Sending photo-phase change to ${cid} for ${gid}:\n${newPhase.message}`);
-      sendTelegramPhoto(cid, `https://webdiplomacy.net/map.php?mapType=large&gameID=${gid}&turn=500&cache=${Math.random().toString(36).slice(2)}`, { caption: newPhase.message });
+      sendMessage(cid, `https://webdiplomacy.net/map.php?mapType=large&gameID=${gid}&turn=500&cache=${Math.random().toString(36).slice(2)}`, { caption: newPhase.message });
       context.currentState.phase = newPhase.phase;
       context.currentState.year = newPhase.year;
     } else {
@@ -65,7 +65,7 @@ const checkWebsite = async (cid, gid) => {
     const newChange = detectReadyChange(context);
     if (newChange) {
       Logger.verbose(`Sending ready message to ${cid} for ${gid}:\n${newChange.message}`);
-      sendTelegramMessage(cid, newChange.message, { parse_mode: "Markdown", disable_web_page_preview: true });
+      sendMessage(cid, newChange.message, { parse_mode: "Markdown", disable_web_page_preview: true });
       context.currentState.readyStates = newChange.readyStates;
     } else {
       context.currentState.readyStates = context.previousState.readyStates;
@@ -74,7 +74,7 @@ const checkWebsite = async (cid, gid) => {
     const timeWarning = detectTimeWarning(context);
     if (timeWarning) {
       Logger.verbose(timeWarning.message);
-      sendTelegramMessage(cid, timeWarning.message, { parse_mode: "Markdown", disable_web_page_preview: true });
+      sendMessage(cid, timeWarning.message, { parse_mode: "Markdown", disable_web_page_preview: true });
     }
 
     context.currentState.initialRun = false;
