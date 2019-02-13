@@ -2,8 +2,10 @@ import Logger from '../../util/logger';
 import TelegramBot from 'node-telegram-bot-api';
 import { init, add, stop } from './subscription';
 import { initialize } from './database';
+import { InterfaceEmitter } from '../../interface';
 
 let telegram;
+const interfaceEmitter = new InterfaceEmitter();
 
 initialize().then(async success => {
   if (success) {
@@ -11,7 +13,8 @@ initialize().then(async success => {
     init();
     Logger.info('Started WebDiplomacy Telegram Bot.');
 
-    telegram.on("text", async (message) => {
+    interfaceEmitter.on("message", async (connection, text) => {
+      const 
       const { chat: { id: cid, title }, text, from: { first_name: firstName, last_name: lastName, username } } = message;
       if (text.length > 1 && text[0] === "/") {
         const fullCommand = text.substring(1);
