@@ -2,6 +2,8 @@ import Discord from 'discord.js';
 import Logger from '../../util/logger';
 import moment from 'moment';
 
+// Discord!!!
+
 if (process.env.DISCORD_TEXT_CHANNEL_ID == null || process.env.DISCORD_AM_CHANNEL_ID == null || process.env.DISCORD_AFK_CHANNEL_ID == null)
   throw 'Add DISCORD_TEXT_CHANNEL_ID, DISCORD_AM_CHANNEL_ID, and DISCORD_AFK_CHANNEL_ID to your environment, please.';
 
