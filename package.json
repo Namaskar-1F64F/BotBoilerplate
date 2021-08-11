@@ -43,7 +43,7 @@
     "pug": "^2.0.3",
     "randexp": "^0.5.3",
     "rimraf": "^2.6.3",
-    "sanitize-html": "^1.20.0",
+    "sanitize-html": "^2.3.2",
     "twilio": "^3.28.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^3.6.0"
